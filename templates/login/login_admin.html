@@ -1,0 +1,53 @@
+<html>
+<title>LOGIN</title>
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<body>
+<div class="container">
+	<div class="jumbotron">
+		<h2 align="center" >WELCOME TO THE LOGIN PAGE</h2>
+    </div>
+</div>
+<div class="container-fluid">
+<div class="row">
+    <div class="col-offset-6">
+	    <div class="panel panel-default">
+            <div class="panel-body">
+                <form class="form-horizontal" role="form" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-5">
+                            USERNAME :
+                        </label>
+                        <div class="col-sm-6">
+                            <input type="text" maxlength="30" name="username">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-5">
+                            PASSWORD :
+                        </label>
+                       <div class="col-sm-6">
+                           <input type="password" name="password">
+                       </div>
+                    <div class="form-group">
+                            <div class="col-sm-offset-5 col-sm-5">
+                                <br><button type="submit" class="btn btn-success">Login</button>
+                            </div>
+                        </div>
+                        <br><br><br>
+                    {% if error_message %}
+                        <h6 align="center"><strong>{{ error_message }}</strong></h6>
+                    {% endif %}
+                </div>
+
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</div>
+</body>
+</html>

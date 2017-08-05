@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <title>Select a firm</title>
+</head>
+<body>
+<h3 align="center"></h3>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12 col-md-7">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4 align="center">{{ message }}</h4>
+                    <h2 align="center">LOG IN TO A FIRM</h2><br><br>
+                    <form class="form-horizontal" role="form" action="" method="POST" action="">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <h4><i>Firm Name : </i>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <input style="width: 250px;" type="text" placeholder="Enter Firm Name" name="firm_name">
+                            </div>
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <h4><i>Year : </i>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input style="width: 250px;" type="number" placeholder="Enter Firm Year" name="firm_year">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-4 col-sm-10">
+                                <button type="submit" class="btn btn-success">Login</button>
+                            </div>
+                        </div>
+                        <br><br>
+                        <h4 align="center"><i>Did not find a firm name ? Click <a href="{% url 'firm:add_firm' %}"><b>here</b></a> to add </i><br><br>
+                            <h4 align="center">
+                            <a href="{% url 'firm:manage_firms' %}">
+                            <button type="button" class="btn btn-primary">Manage your firms</button>
+                            </a>
+                        </h4>
+                    </form>
+                </div>
+            </div>
+        </div>
+</body>
+</html>

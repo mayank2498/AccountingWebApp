@@ -1,0 +1,75 @@
+{% extends 'home/base.html' %}
+{% block title %}Ledgers{% endblock %}
+{% block ledger %} active {% endblock %}
+{% block name %}{{ name }}{% endblock %}
+{% block year %}{{ year }}{% endblock %}
+{% block body %}
+    <div class="container">
+  <ul class="nav nav-pills">
+    <li class="{{ all }}"><a data-toggle="pill" href="{% url 'home:ledger_home' id %}"><h4>ALL</h4></a></li>
+    <li class="{{ supplier }}"><a data-toggle="pill" href="{% url 'home:filtersuppliers' id %}"><h4>Suppliers</h4></a></li>
+      <li class="{{ customer }}"><a data-toggle="pill" href="{% url 'home:filtercustomer' id %}"><h4>Customers</h4></a></li>
+      <li class="{{ employee }}"><a data-toggle="pill" href="{% url 'home:filteremployee' id %}"><h4>Employees</h4></a></li>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{% url 'home:add_ledger' id %}">
+        <button type="submit" class="btn btn-success" >
+            <h5 style="color:black;">Add Ledger</h5>
+        </button>
+    </a>
+      </ul>
+</div>
+<div class="col-sm-12">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Type</th>
+                        <th>Mobile Number</th>
+                        <th>PAN number</th>
+                        <th>Received Amount</th>
+                        <th>Impress Money given</th>
+                        <th>Delete</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for ledger in ledgers %}
+                    <tr>
+                        <td><a href="{% url 'transaction:ledger_details' id ledger.id%}">{{ledger.name}}</a></td>
+                         <td>
+                            {{ledger.address}}
+                        </td>
+                        <td>
+                            <span class="badge">{{ ledger.type }}</span></a>
+                        </td>
+                        <td>{{ ledger.mobile_no }}</td>
+                        <td>{{ ledger.pan_no }}</td>
+                        <td>
+                            {{ ledger.temp2 }}
+                        </td>
+                        <td>
+                            {{ ledger.temp1 }}
+                        </td>
+                    <td>
+<form action="{% url 'home:delete_ledger' id ledger.id %}" method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm-2">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                </form>
+                    </td>
+                    <td>
+                <a href="{% url 'home:update_ledger' id ledger.id %}">
+                    <button class="btn btn-success">Edit</button></a>
+                    </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

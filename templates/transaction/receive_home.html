@@ -1,0 +1,59 @@
+{% extends 'home/base.html' %}
+{% block title %}Receive{% endblock %}
+{% block receive %}active{% endblock %}
+{% block body %}
+<div class="container">
+  <ul class="nav nav-pills">
+    <li class="{{ all }}"><a data-toggle="pill" href="{% url 'transaction:receive_home' id%}"><h4>ALL</h4></a></li>
+    <li class="{{ supplier }}"><a data-toggle="pill" href="{% url 'transaction:filter_suppliers' id 3 %}"><h4>Suppliers</h4></a></li>
+      <li class="{{ customer }}">
+          <a data-toggle="pill" href="{% url 'transaction:filter_customers' id 3 %}"><h4>Customers</h4></a></li>
+      <li class="{{ employee }}">
+          <a data-toggle="pill" href="{% url 'transaction:filter_employees' id 3 %}"><h4>Employees</h4></a></li>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{% url 'transaction:add_receive' id %}">
+        <button type="submit" class="btn btn-success" >
+            <h5 style="color:black;">Add Receive</h5>
+        </button>
+    </a>
+
+      </ul>
+</div>
+
+<br><br>
+<div class="col-sm-12">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Ledger Name</th>
+                        <th>Type</th>
+                        <th>Mobile Number</th>
+                        <th>Receive Amount</th>
+                        <th>Transaction Type</th>
+                        <th>Voucher Number</th>
+                        <th>Date of Transaction</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for receive in receives %}
+                    <tr>
+                        <td>{{receive.ledger.name}}</td>
+                        <td>
+                            <span class="badge">{{ receive.ledger.type }}</span></a>
+                        </td>
+                        <td>{{ receive.ledger.mobile_no }}</td>
+                        <td>{{ receive.amount }}</td>
+                        <td>{{ receive.transaction_type }}</td>
+                        <td>{{ receive.voucher.voucher_no }}</td>
+                        <td>{{ receive.created }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

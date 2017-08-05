@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    {% block script %}{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+<script type="text/javascript">{% block js %}{% endblock %}</script>
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+       <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a class='navbar-brand' href=""><h4 style="color:yellow;">Dashboard&nbsp;
+                </h4></a></li>
+                <li class="{% block ledger %}{% endblock %}">
+                    <a href="{% url 'home:ledger_home' id %}">
+                        <h4>
+                         Ledgers</h4>
+                    </a>
+                </li>
+                <li class="{% block expense %}{% endblock %}">
+                    <a href="{% url 'transaction:expense_home' id %}">
+                        <h4>&nbsp;
+                        Expense</h4>
+                    </a>
+                </li>
+                <li class="{% block impress %}{% endblock %}">
+                    <a href="{% url 'transaction:impress_home' id %}">
+                        <h4>
+                        Impress</h4>
+                    </a>
+                </li>
+                 <li class="{% block receive %}{% endblock %}">
+                    <a href="{% url 'transaction:receive_home' id %}">
+                        <h4>
+                        Receive</h4>
+                    </a>
+                </li>
+                <li>
+                    <form class="navbar-form navbar-left" role="search" method="get" action="">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="q" value="{{ request.GET.q }}" placeholder="Search a Ledger name">
+                </div>
+                <button type="submit" class="btn btn-default">Search</button>
+</form>
+                </li>
+
+                </li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li class="">
+                <a>
+                <h4 style="color:cornflowerblue">
+                    {% block name %}{% endblock %}
+                    {% block year %}{% endblock %}
+                </h4>
+                </a>
+                </li>
+            <li class="">
+                <a href="{% url 'login:logout_user' %}">
+                    <h4><span class="glyphicon glyphicon-off"></span>&nbsp;
+                        Logout</h4>
+                </a>
+            </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+{% block body %}
+{% endblock %}
+
+</body>
+</html>

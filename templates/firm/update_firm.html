@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Firm</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4 align="center"><i><b>Update your Firm</b></i> <br><br><br><br>
+                    <form class="form-horizontal" role="form" action="" method="POST">
+                        {% csrf_token %}
+                        {% include 'home/form_template.html' %}
+                        <div class="form-group">
+                            <div class="col-sm-offset-1 col-sm-10"><br><br>
+                                <button type="submit" class="btn btn-success"><h5>Update</h5></button>
+                            </div>
+                        </div>
+                    </form>
+                        <h4 align="center">
+<a href="{% url 'firm:manage_firms' %}">
+<button type="button" class="btn btn-primary">Manage your firms</button>
+</a>
+<a href="{% url 'firm:firm_login' %}">
+<button type="button" class="btn btn-success">Login</button>
+</a>
+
+</h4>
+                </div>
+            </div>
+        </div>
+</div>
+</body>
+</html>
+
+

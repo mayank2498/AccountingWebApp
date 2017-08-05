@@ -1,0 +1,66 @@
+{% extends 'home/base.html' %}
+{% block title %}Impress{% endblock %}
+{% block impress %}active{% endblock %}
+{% block body %}
+<div class="container">
+  <ul class="nav nav-pills">
+    <li class="{{ all }}"><a data-toggle="pill" href="{% url 'transaction:impress_home' id %}"><h4>ALL</h4></a></li>
+    <li class="{{ supplier }}"><a data-toggle="pill" href="{% url 'transaction:filter_suppliers' id 2 %}"><h4>Suppliers</h4></a></li>
+      <li class="{{ customer }}">
+          <a data-toggle="pill" href="{% url 'transaction:filter_customers' id 2 %}"><h4>Customers</h4></a></li>
+      <li class="{{ employee }}">
+          <a data-toggle="pill" href="{% url 'transaction:filter_employees' id 2 %}"><h4>Employees</h4></a></li>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{% url 'transaction:add_impress' id %}">
+        <button type="submit" class="btn btn-success" >
+            <h5 style="color:black;">Add Impress</h5>
+        </button>
+    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="{% url 'transaction:pending_impresses' id %}">
+        <button type="submit" class="btn btn-success" >
+            <h5 style="color:black;">View All Pending Impresses</h5>
+        </button>
+    </a>
+      </ul>
+</div>
+
+
+<br><br>
+<div class="col-sm-12">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Ledger Name</th>
+                        <th>Type</th>
+                        <th>Mobile Number</th>
+                        <th>Impress Amount</th>
+                        <th>Transaction Type</th>
+                        <th>Voucher Number</th>
+                        <th>Date of Transaction</th>
+                        <th>Pending</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for impress in impresses %}
+                    <tr>
+                        <td>{{impress.ledger.name}}</td>
+                        <td>
+                            <span class="badge">{{ impress.ledger.type }}</span></a>
+                        </td>
+                        <td>{{ impress.ledger.mobile_no }}</td>
+                        <td>{{ impress.amount }}</td>
+                        <td>{{ impress.transaction_type }}</td>
+                        <td>{{ impress.voucher.voucher_no }}</td>
+                        <td>{{ impress.created }}</td>
+                        <td>{{ impress.pending }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

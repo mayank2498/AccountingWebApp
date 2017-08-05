@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>FIRMS</title>
+</head>
+<body>
+<div class="container">
+	<div class="jumbotron">
+        <h3 align="center"><b><u>FIRM'S DETAILS</u></b></h3>
+        <h4 align="right">
+<a href="{% url 'firm:firm_login' %}">
+<button type="button" class="btn btn-success">Login</button>
+</a>
+</h4>
+    </div>
+</div>
+<div class="col-sm-12">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Firm Name</th>
+                        <th>Financial Year</th>
+                        <th>Date of creation</th>
+                        <th>Delete</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for firm in firms %}
+                    <tr>
+                        <td>{{firm.name}}</td>
+                        <td>{{ firm.year }}</td>
+                        <td>{{ firm.created }}</td>
+                     <td>
+<form action="{% url 'firm:delete_firm' firm.id %}" method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm-2">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                </form>
+                     </td>
+                        <td>
+                <a href="{% url 'firm:update_firm' firm.id %}">
+                    <button class="btn btn-success">Edit</button></a>
+                    </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<!--
+
+-->
