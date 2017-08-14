@@ -18,16 +18,18 @@ def ledger_home(request,firm_id):
                 break
         for ledger in ledgers:
             impresses = Impress.objects.filter(ledger__firm_id=int(firm_id), ledger_id=ledger.id)
-            expenses = Expense.objects.filter(ledger__firm_id=int(firm_id), ledger_id=ledger.id)
+            #expenses = Expense.objects.filter(ledger__firm_id=int(firm_id), ledger_id=ledger.id)
             receives = Receive.objects.filter(ledger__firm_id=int(firm_id), ledger_id=ledger.id)
-            amount = 0.0
+            balance = 0.0
             for obj in impresses:
-                amount += obj.amount_left
-            ledger.temp1 = amount
-            amount = 0.0
+                balance -= obj.amount_left
             for obj in receives:
-                amount += obj.amount
-            ledger.temp2 = amount
+                balance += obj.amount
+            #for obj in expenses:
+            #    balance -= obj.amount_left
+            ledger.balance_plus = balance
+            if balance < 0.0 :
+                ledger.balance_minus = float(-1)*balance
             ledger.save()
         query = request.GET.get("q")
         if query is not None:
@@ -55,11 +57,14 @@ def add_ledger(request,firm_id):
 
 
 def delete_ledger(request,firm_id,ledger_id):
-    firm = Firm.objects.get(id=int(firm_id))
-    ledger = Ledger.objects.filter(pk=int(ledger_id))
-    ledger.delete()
-    ledgers = Ledger.objects.filter(firm_id=int(firm_id))
-    return render(request,'home/ledger_home.html',{'ledgers':ledgers,'name':firm.name,'year':firm.year,'id':firm.id})
+    if request.user.is_authenticated():
+        firm = Firm.objects.get(id=int(firm_id))
+        ledger = Ledger.objects.filter(pk=int(ledger_id))
+        ledger.delete()
+        ledgers = Ledger.objects.filter(firm_id=int(firm_id))
+        return render(request,'home/ledger_home.html',{'ledgers':ledgers,'name':firm.name,'year':firm.year,'id':firm.id})
+    else:
+        return render(request,'login/login_admin.html')
 
 def update_ledger(request,firm_id,ledger_id):
     ledger_id = int(ledger_id)

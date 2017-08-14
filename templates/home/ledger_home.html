@@ -29,8 +29,7 @@
                         <th>Type</th>
                         <th>Mobile Number</th>
                         <th>PAN number</th>
-                        <th>Received Amount</th>
-                        <th>Impress Money given</th>
+                        <th>Balance</th>
                         <th>Delete</th>
                         <th>Edit</th>
                     </tr>
@@ -47,16 +46,20 @@
                         </td>
                         <td>{{ ledger.mobile_no }}</td>
                         <td>{{ ledger.pan_no }}</td>
-                        <td>
-                            {{ ledger.temp2 }}
-                        </td>
-                        <td>
-                            {{ ledger.temp1 }}
+                        <td>{% if ledger.balance_plus == 0.0 %}
+                            <h5>&#8377;&nbsp;{{ ledger.balance_plus }}</h5>
+                            {% endif %}
+                            {% if ledger.balance_plus > 0.0 %}
+                            <h5 style="color:blue;">&#8377;&nbsp;{{ ledger.balance_plus }}</h5>
+                            {% endif %}
+                            {% if ledger.balance_plus < 0.0 %}
+                            <h5 style="color:red;">&#8377;&nbsp;{{ ledger.balance_minus }}</h5>
+                            {% endif %}
                         </td>
                     <td>
 <form action="{% url 'home:delete_ledger' id ledger.id %}" method="POST" style="display: inline;">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger btn-sm-2">
+                    <button type="submit" class="btn btn-danger btn-sm-2" onclick="return confirm('Delete ledger {{ ledger.name }}\n\n Are you sure ?')">
                         <span class="glyphicon glyphicon-trash"></span>
                     </button>
                 </form>

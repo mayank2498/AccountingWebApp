@@ -42,8 +42,11 @@ def firm_login(request):
         return redirect('http://127.0.0.1:8000/login')
 
 def manage_firms(request):
-    firms = Firm.objects.all()
-    return render(request,'firm/firm_home.html',{'firms':firms})
+    if request.user.is_authenticated():
+        firms = Firm.objects.all()
+        return render(request,'firm/firm_home.html',{'firms':firms})
+    else:
+        return redirect('http://127.0.0.1:8000/login')
 
 def update_firm(request,firm_id):
     firm = Firm.objects.get(id=int(firm_id))
@@ -64,8 +67,12 @@ def update_firm(request,firm_id):
         return render(request, 'login/login_admin.html')
 
 def delete_firm(request,firm_id):
-    firm = Firm.objects.get(id=int(firm_id))
-    firm.delete()
-    firms = Firm.objects.all()
-    return render(request,'firm/firm_home.html',{'firms':firms})
+    if request.user.is_authenticated():
+        firm = Firm.objects.get(id=int(firm_id))
+        firm.delete()
+        firms = Firm.objects.all()
+        return render(request,'firm/firm_home.html',{'firms':firms})
+    else:
+        return render(request, 'login/login_admin.html')
+
 

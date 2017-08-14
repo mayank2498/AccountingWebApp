@@ -40,7 +40,8 @@
                     </a>
                 </li>
                 <li>
-                    <form class="navbar-form navbar-left" role="search" method="get" action="">
+                    <form class="navbar-form navbar-left" role="search" method="get"
+                          action={% block action %}{% endblock %}>
                 <div class="form-group">
                     <input type="text" class="form-control" name="q" value="{{ request.GET.q }}" placeholder="Search a Ledger name">
                 </div>
@@ -54,15 +55,21 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="">
                 <a>
-                <h4 style="color:cornflowerblue">
+                <h5 style="color:cornflowerblue">
                     {% block name %}{% endblock %}
                     {% block year %}{% endblock %}
-                </h4>
+                </h5>
                 </a>
                 </li>
             <li class="">
+                <a href="{% url 'firm:firm_login' %}">
+                    <h4 style="color:lightskyblue"><span class="glyphicon glyphicon-log-in"></span>&nbsp;
+                        Firm Login</h4>
+                </a>
+            </li>
+            <li class="">
                 <a href="{% url 'login:logout_user' %}">
-                    <h4><span class="glyphicon glyphicon-off"></span>&nbsp;
+                    <h4 style="color:red"><span class="glyphicon glyphicon-off"></span>&nbsp;
                         Logout</h4>
                 </a>
             </li>

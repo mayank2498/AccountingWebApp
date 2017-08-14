@@ -55,6 +55,7 @@ def add_impress(request,firm_id):
                     impress.ledger_id = ledger.pk
                     impress.amount = request.POST['amount']
                     impress.transaction_type = request.POST['transaction_type']
+                    impress.description = request.POST['description']
                     impress.amount_left = impress.amount
                     impress.voucher_id = voucher_new.pk
                     impress.save()
@@ -124,6 +125,8 @@ def add_expense(request,firm_id):
                     expense.amount = request.POST['amount']
                     expense.voucher_id = voucher_new.pk
                     expense.transaction_type = request.POST['transaction_type']
+                    expense.amount_left = expense.amount
+                    expense.description = request.POST['description']
                     expense.save()
                     update_impress(expense,firm_id,float(expense.amount))
                     message = "Impress Data has been saved !"
@@ -143,10 +146,14 @@ def update_impress(expense,firm_id,expense_amount):
     for obj in impresses:
         if obj.amount_left != 0.0:
             if obj.amount_left > expense_amount :
+                expense.amount_left = 0.0
+                expense.save()
                 obj.amount_left -= expense_amount
                 obj.save()
                 break
             else:
+                expense.amount_left -= float(obj.amount_left)
+                expense.save()
                 expense_amount -= obj.amount_left
                 obj.amount_left = 0.0
                 obj.pending = False
@@ -209,6 +216,7 @@ def add_receive(request,firm_id):
                     receive.ledger_id = ledger.pk
                     receive.amount = request.POST['amount']
                     receive.transaction_type = request.POST['transaction_type']
+                    receive.description = request.POST['description']
                     receive.voucher_id = voucher_new.pk
                     receive.save()
                     message = "Impress Data has been saved !"

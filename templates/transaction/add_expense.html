@@ -38,6 +38,11 @@
                                 <option>Bank</option>
                             </select>
                         </div>
+                            <div class="col-sm-offset-0 col-sm-10">
+                                <br><br>
+                        Description :
+                           <input type="text" style="width: 250px; color: black;" name="description">
+                        </div>
                         <div class="form-group">
                             <div class="col-sm-offset-1 col-sm-10"><br><br>
                                 <button type="submit" class="btn btn-success"><h5>Submit</h5></button>
@@ -62,12 +67,17 @@
 <div align="center">
 Ledger Name :&nbsp;&nbsp;&nbsp;{{ obj.ledger.name }}
 <span class="badge">{{ type }}</span>
-<br><br><br>
+<br><br>
     <div align="center">Amount  &nbsp;:&nbsp;&nbsp;&#8377&nbsp; {{ obj.amount }}
+<br><br>
+Voucher number :&nbsp;&nbsp;  {{ v_no }}
 <br><br>
 Date of Transaction :&nbsp;&nbsp;  {{ obj.created }}
 <br><br>
 Transaction Type &nbsp; : &nbsp;&nbsp;  {{ obj.transaction_type }}
+<br><br>
+Description :&nbsp;&nbsp;  {{ obj.description }}
+
 {% endif %}
 <script>
 var url = "http://127.0.0.1:8000/home/"+{{ id }}+"/ledger_json";

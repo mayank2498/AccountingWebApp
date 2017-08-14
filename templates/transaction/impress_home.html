@@ -39,7 +39,6 @@
                         <th>Transaction Type</th>
                         <th>Voucher Number</th>
                         <th>Date of Transaction</th>
-                        <th>Pending</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,7 +53,7 @@
                         <td>{{ impress.transaction_type }}</td>
                         <td>{{ impress.voucher.voucher_no }}</td>
                         <td>{{ impress.created }}</td>
-                        <td>{{ impress.pending }}</td>
+
                     </tr>
                 {% endfor %}
                 </tbody>

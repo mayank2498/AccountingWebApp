@@ -1,0 +1,57 @@
+<html>
+<title>Verify Otp</title>
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<body>
+<div class="container">
+	<div class="jumbotron">
+		<h2 align="center" >Enter OTP you have received</h2>
+    </div>
+</div>
+<div class="container-fluid">
+<div class="row">
+    <div class="col-offset-6">
+	    <div class="panel panel-default">
+            <div class="panel-body">
+                <form class="form-horizontal" role="form" method="POST" action="{% url 'login:verify' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-5">
+                            Username :
+                        </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="username">
+                        </div>
+                         <label class="control-label col-sm-5">
+                            Password :
+                        </label>
+                        <div class="col-sm-6">
+                            <input type="password" name="password">
+                        </div>
+                        <label class="control-label col-sm-5">
+                            Mobile Number :
+                        </label>
+                        <div class="col-sm-6">
+                            <input type="number" maxlength="10" name="mobile">
+                        </div>
+                        <label class="control-label col-sm-5">
+                            OTP :
+                        </label>
+                        <div class="col-sm-6">
+                            <input type="number" maxlength="6" name="otp" step="1">
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-5 col-sm-5">
+                                <br><button type="submit" class="btn btn-success">Login</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</div>
+</body>
+</html>
