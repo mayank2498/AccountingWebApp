@@ -5,6 +5,31 @@
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <title>FIRMS</title>
 </head>
+<script>
+    function verify(pass,firm_id) {
+        var password = prompt('Enter Password ');
+        if (password == pass){
+            alert('Successful. Firm has been deleted');
+            var url = 'http://127.0.0.1:8000/firm/'+firm_id.toString()+'/delete_firm';
+            window.location = url;
+        }
+        else {
+            alert('Oops! Wrong Password!!');
+        }
+    }
+    function verify_edit(pass,firm_id) {
+        alert(pass);
+        var password = prompt('Enter Password ');
+        if (password == pass){
+            alert('Successful. You can now update firm details.');
+            var url = 'http://127.0.0.1:8000/firm/'+firm_id.toString()+'/update_firm';
+            window.location = url;
+        }
+        else {
+            alert('Oops! Wrong Password!!');
+        }
+    }
+</script>
 <body>
 <div class="container">
 	<div class="jumbotron">
@@ -36,16 +61,15 @@
                         <td>{{ firm.year }}</td>
                         <td>{{ firm.created }}</td>
                      <td>
-<form action="{% url 'firm:delete_firm' firm.id %}" method="POST" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger btn-sm-2">
+
+                    <button type="button" class="btn btn-danger btn-sm-2" onclick="verify('{{ firm.password }}','{{ firm.id }}')">
                         <span class="glyphicon glyphicon-trash"></span>
                     </button>
-                </form>
+
                      </td>
                         <td>
-                <a href="{% url 'firm:update_firm' firm.id %}">
-                    <button class="btn btn-success">Edit</button></a>
+
+                    <button type="button" class="btn btn-success" onclick="verify_edit('{{ firm.password }}','{{ firm.id }}')">Edit</button>
                     </td>
                     </tr>
                 {% endfor %}

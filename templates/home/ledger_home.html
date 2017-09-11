@@ -25,50 +25,51 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Address</th>
                         <th>Type</th>
-                        <th>Mobile Number</th>
-                        <th>PAN number</th>
                         <th>Balance</th>
                         <th>Delete</th>
                         <th>Edit</th>
+                        <th>Info</th>
                     </tr>
                 </thead>
                 <tbody>
                 {% for ledger in ledgers %}
+
                     <tr>
-                        <td><a href="{% url 'transaction:ledger_details' id ledger.id%}">{{ledger.name}}</a></td>
-                         <td>
-                            {{ledger.address}}
-                        </td>
+                        <td><a href="{% url 'transaction:ledger_details' id ledger.id%}"><h4>{{ledger.name}}</h4></a></td>
+
                         <td>
-                            <span class="badge">{{ ledger.type }}</span></a>
+                            <span class="badge"><h4>{{ ledger.type }}</h4></span></a>
                         </td>
-                        <td>{{ ledger.mobile_no }}</td>
-                        <td>{{ ledger.pan_no }}</td>
-                        <td>{% if ledger.balance_plus == 0.0 %}
-                            <h5>&#8377;&nbsp;{{ ledger.balance_plus }}</h5>
-                            {% endif %}
-                            {% if ledger.balance_plus > 0.0 %}
-                            <h5 style="color:blue;">&#8377;&nbsp;{{ ledger.balance_plus }}</h5>
-                            {% endif %}
-                            {% if ledger.balance_plus < 0.0 %}
-                            <h5 style="color:red;">&#8377;&nbsp;{{ ledger.balance_minus }}</h5>
-                            {% endif %}
+
+                        <td>&#8377;&nbsp;&nbsp;<b>{{ ledger.amount }}</b>&nbsp;&nbsp;&nbsp;{% if ledger.amount != 0.0 %}<span class="badge">{{ ledger.dominant }}</span>{% endif %}
                         </td>
                     <td>
 <form action="{% url 'home:delete_ledger' id ledger.id %}" method="POST" style="display: inline;">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger btn-sm-2" onclick="return confirm('Delete ledger {{ ledger.name }}\n\n Are you sure ?')">
+                    <button {% if ledger.name != 'Cash' %}type="submit"{% endif %}
+                            {% if ledger.name == 'Cash' %}type="button"{% endif %}
+                            class="btn btn-danger btn-sm-2" {% if ledger.name != 'Cash' %} onclick="return confirm('Delete ledger {{ ledger.name }}\n\n Are you sure ?')" {% endif %}>
                         <span class="glyphicon glyphicon-trash"></span>
                     </button>
+
                 </form>
                     </td>
                     <td>
-                <a href="{% url 'home:update_ledger' id ledger.id %}">
+                {% if ledger.name != 'Cash' %}<a href="{% url 'home:update_ledger' id ledger.id %}">{% endif %}
                     <button class="btn btn-success">Edit</button></a>
                     </td>
+                    <td>
+                        <form action="{% url 'home:ledger_info' id ledger.id %}" method="POST" style="display: inline;">
+                    {% csrf_token %}
+
+                        <button class="btn btn-primary btn-sm-2">
+                        <span class="glyphicon glyphicon-info-sign"></span></td>
+                    </button>
+                    </form>
                     </tr>
+                    </tr>
+                    </a>
                 {% endfor %}
                 </tbody>
             </table>

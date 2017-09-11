@@ -8,12 +8,13 @@
     <title>{% block title %}{% endblock %}</title>
 <script type="text/javascript">{% block js %}{% endblock %}</script>
 </head>
+
 <body>
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
        <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li><a class='navbar-brand' href=""><h4 style="color:yellow;">Dashboard&nbsp;
+                <li class="{% block journal %}{% endblock %}"><a class='navbar-brand' href="{% url 'transaction:add_journal' id %}"><h4 style="color:yellow;">Journal&nbsp;
                 </h4></a></li>
                 <li class="{% block ledger %}{% endblock %}">
                     <a href="{% url 'home:ledger_home' id %}">
@@ -54,12 +55,13 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li class="">
-                <a>
-                <h5 style="color:cornflowerblue">
-                    {% block name %}{% endblock %}
+
+                <h7 style="color:cornflowerblue">
+                <br>
+                    {% block name %}{% endblock %}<br>
                     {% block year %}{% endblock %}
-                </h5>
-                </a>
+                </h7>
+
                 </li>
             <li class="">
                 <a href="{% url 'firm:firm_login' %}">

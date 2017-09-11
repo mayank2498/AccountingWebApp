@@ -1,64 +1,68 @@
 {% extends 'home/base.html' %}
 {% block title %}Ledger Transactions{% endblock %}
 {% block body %}
-    <h3 align="center">All Transactions</h3>
-    <h3 align="center"><i><b>{{ ledger.name }}</b> - <span class="badge"><h4>{{ ledger.type }}</h4></span></i>
+    <h3 align="center"><i><b>{{ ledger.name }}</b> - <span class="badge">{{ ledger.type }}</span></i>
+        <h3 align="right">
+    <a href="{% url 'transaction:add_transaction' id 1 ledger.id%}">
+    <button type="button" class="btn btn-success btn-sm-4">
+        <span class="glyphicon glyphicon-plus-sign">Impress</span>
+    </button></a>
+    <a href="{% url 'transaction:add_transaction' id 2 ledger.id%}">
+    <button type="button" class="btn btn-success">
+        <span class="glyphicon glyphicon-plus-sign">Expense</span>
+    </button></a>
+    <a href="{% url 'transaction:add_transaction' id 3 ledger.id %}">
+    <button type="button" class="btn btn-success">
+        <span class="glyphicon glyphicon-plus-sign">Receive</span>
+    </button></a>
 </h3>
+
 <br>
+
 <div class="col-sm-12">
     <div class="panel panel-default">
         <div class="panel-body">
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Type</th>
-                        <th>Amount</th>
-                        <th>Transaction Type</th>
-                        <th>Voucher Number</th>
+                        <th>Description</th>
+                        <th>Transaction Mode</th>
                         <th>Date of Transaction</th>
+                        {% if ledger.name != 'Cash' %}<th>Voucher Number</th>{% endif %}
+
+                        <th>Credit</th>
+                        <th>Debit</th>
                     </tr>
                 </thead>
                 <tbody>
-                {% for impress in impresses %}
+                {% for transaction in transactions %}
                     <tr>
-                        <td><span class="badge"><h5 style="color:   lightskyblue">Impress</h5></td>
-                        <td>{{ impress.amount }}
+                        <td><h5 style="color:blue">{{ transaction.description }}</h5></td>
+                        <td>{{ transaction.mode }}
                         </td>
-                        <td>{{ impress.transaction_type }}</td>
-                        <td>{{ impress.voucher.voucher_no }}</td>
-                        <td>{{ impress.created }}</td>
+                        <td>{{ transaction.created }}</td>
 
-                    <tr>
-                {% endfor %}
-                {% for expense in expenses %}
-                    <tr>
-                        <td><span class="badge"><h5 style="color:yellow">Expense</h5></span></td>
+                        {% if ledger.name != 'Cash' %}<td>{{ transaction.voucher.voucher_no }}</td>{% endif %}
+                        {% if transaction.type == 'Credit' %}<td>
+                            <h5 style="color:blue">&#8377;&nbsp;&nbsp;&nbsp;{{ transaction.amount }}</h5></td>{% endif %}
+                        {% if transaction.type == 'Debit' %}<td> ---</td>{% endif %}
+                        {% if transaction.type == 'Debit' %}<td>
+                            <h5 style="color:red">&#8377;&nbsp;&nbsp;&nbsp;{{ transaction.amount }}</h5></td>{% endif %}
+                        {% if transaction.type == 'Credit' %}<td> ---</td>{% endif %}
                         <td>
-                            {{ expense.amount }}
-                        </td>
-                        <td>{{ expense.transaction_type }}</td>
-                        <td>{{ expense.voucher.voucher_no }}</td>
-                        <td>{{ expense.created }}</td>
 
                     <tr>
+
                 {% endfor %}
-                {% for receive in receives %}
-                    <tr>
-                        <td><span class="badge"><h5 style="color:antiquewhite">Receive</td>
-                        <td>
-                            {{ receive.amount }}
-                        </td>
-                        <td>{{ receive.transaction_type }}</td>
-                        <td>{{ receive.voucher.voucher_no }}</td>
-                        <td>{{ receive.created }}</td>
-
-                    <tr>
-                {% endfor %}
-
+<div class="jumbotron">
+                <h4 align="center"><u>BALANCE</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &#8377;&nbsp;&nbsp;<b>{{ amount }}</b> &nbsp;&nbsp;&nbsp;{{ type }}</h5><br>
+</div>
                 </tbody>
             </table>
+
         </div>
     </div>
 </div>
+
 
 {% endblock %}

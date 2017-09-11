@@ -29,7 +29,6 @@
                     <tr>
                         <th>Ledger Name</th>
                         <th>Type</th>
-                        <th>Mobile Number</th>
                         <th>Receive Amount</th>
                         <th>Transaction Type</th>
                         <th>Voucher Number</th>
@@ -43,9 +42,8 @@
                         <td>
                             <span class="badge">{{ receive.ledger.type }}</span></a>
                         </td>
-                        <td>{{ receive.ledger.mobile_no }}</td>
                         <td>{{ receive.amount }}</td>
-                        <td>{{ receive.transaction_type }}</td>
+                        <td>{{ receive.mode }}</td>
                         <td>{{ receive.voucher.voucher_no }}</td>
                         <td>{{ receive.created }}</td>
                     </tr>

@@ -4,8 +4,12 @@ from .models import Ledger
 from .forms import LedgerForm
 from django.core import serializers
 from django.http import HttpResponse
-from transaction.models import Impress,Expense,Receive
+from transaction.models import Transaction
 
+def ledger_info(request,firm_id,ledger_id):
+    ledger = Ledger.objects.filter(firm_id=int(firm_id),id=int(ledger_id))[0]
+    print(ledger.name)
+    return render(request,'home/ledger_info.html',{'id':firm_id,'ledger':ledger})
 
 def ledger_home(request,firm_id):
     if request.user.is_authenticated():
@@ -16,26 +20,44 @@ def ledger_home(request,firm_id):
                 name = obj.name
                 year = obj.year
                 break
-        for ledger in ledgers:
-            impresses = Impress.objects.filter(ledger__firm_id=int(firm_id), ledger_id=ledger.id)
-            #expenses = Expense.objects.filter(ledger__firm_id=int(firm_id), ledger_id=ledger.id)
-            receives = Receive.objects.filter(ledger__firm_id=int(firm_id), ledger_id=ledger.id)
-            balance = 0.0
-            for obj in impresses:
-                balance -= obj.amount_left
-            for obj in receives:
-                balance += obj.amount
-            #for obj in expenses:
-            #    balance -= obj.amount_left
-            ledger.balance_plus = balance
-            if balance < 0.0 :
-                ledger.balance_minus = float(-1)*balance
-            ledger.save()
+
         query = request.GET.get("q")
         if query is not None:
             ledgers = ledgers.filter(name__contains=query).distinct()
+            for ledger in ledgers:
+                amount = 0.0
+                transactions = Transaction.objects.filter(ledger_id=ledger.id,ledger__firm_id=int(firm_id))
+                for transaction in transactions:
+                    if transaction.type == 'Credit':
+                        amount += transaction.amount
+                    else:
+                        amount -= transaction.amount
+                if amount < 0.0 :
+                    ledger.amount = float(0-amount)
+                    ledger.dominant = 'Debit'
+                    ledger.save()
+                else:
+                    ledger.amount = amount
+                    ledger.dominant = 'Credit'
+                    ledger.save()
             return render(request,'home/ledger_home.html',{'ledgers':ledgers,'name':name,'year':year,'id':firm_id,'all':'active'})
         else:
+            for ledger in ledgers:
+                amount = 0.0
+                transactions = Transaction.objects.filter(ledger_id=ledger.id,ledger__firm_id=int(firm_id))
+                for transaction in transactions:
+                    if transaction.type == 'Credit':
+                        amount += transaction.amount
+                    else:
+                        amount -= transaction.amount
+                if amount < 0.0 :
+                    ledger.amount = float(0-amount)
+                    ledger.dominant = 'Debit'
+                    ledger.save()
+                else:
+                    ledger.amount = amount
+                    ledger.dominant = 'Credit'
+                    ledger.save()
             return render(request, 'home/ledger_home.html',
                           {'ledgers': ledgers, 'name': name, 'year': year, 'id': firm_id,'all':'active'})
     else:
@@ -47,6 +69,12 @@ def add_ledger(request,firm_id):
         if form.is_valid():
             ledger = form.save(commit=False)
             ledger.firm_id = int(firm_id)
+            if(ledger.mobile_no == ""):
+                ledger.mobile_no = "XXXXXXXXXX"
+            if (ledger.pan_no == ""):
+                ledger.pan_no = "XXXXXX"
+            if (ledger.address == ""):
+                ledger.address = "Not Specified"
             ledger.save()
             ledgers = Ledger.objects.filter(firm_id=int(firm_id))
             return render(request,'home/ledger_home.html',{'ledgers':ledgers,'id':firm_id})

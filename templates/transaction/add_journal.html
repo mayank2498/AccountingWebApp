@@ -1,0 +1,206 @@
+{% extends 'home/base.html' %}
+{% block journal %}Active{% endblock %}
+{% block title %}Add Journal{% endblock %}
+{% block body %}
+<style>
+    .jumbotron { height:100px;}
+select {
+    width: 200px;
+    height: 42px;
+    color:black;
+    font-size: 18px;
+}
+</style>
+    <h2 align="center" id="message" style="font-family: 'Nimbus Mono L';color: darkblue">{{ message }}</h2>
+    <h4 align="center">Journal Entry</h4>
+    <div class="container-fluid">
+    <div class="row">
+
+        <div class="col-sm-offset-3 col-sm-7">
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+    <form class="form-horizontal" role="form" action="" method="post">
+        <div class="form-group">
+        <div class="col-sm-5">
+        <div class="badge"><h5 style="font-size:20px;color: white">Ledger</h5>
+        <input autocomplete="off" style="font-size:18px; color:black; width: 400px; height: 40px" type="text" onkeyup="getsearch_results()" placeholder="Enter Ledger Name" name="ledger_top" id="search">
+        <select id="type_top">
+            <option>Debit</option>
+            <option>Credit</option>
+        </select>
+        <div id="type"></div>
+            <div id="searched" style="font-size: 25px;background-color: yellow">
+                        </div>
+             </span>
+        <input autocomplete="off" style="font-size:14px; color:black; width: 400px; height: 50px" type="text" placeholder="Description" id="description_top">
+        </form>
+
+        </div></div></div></div></div></div></div></div>
+<div>
+<form class="form-horizontal" role="form" action="" method="post">
+    {% csrf_token %}
+<div class="row">
+        <div class="col-sm-offset-1 col-sm-10">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th><h4 style="font-family: 'Nimbus Mono L'; font-size: 24px;"><b><u>Ledger</u></b></h4></th>
+                        <th><h4 style="font-family: 'Nimbus Mono L';font-size: 24px;"><b><u>Amount</u></b></h4></th>
+                        <th><h4 style="font-family: 'Nimbus Mono L';font-size: 24px;"><b><u>Voucher Number</u></b></h4></th>
+                        <th><h4 style="font-family: 'Nimbus Mono L';font-size: 24px;"><b><u>Description</u></b></h4></th>
+                    </tr>
+                </thead>
+                <tbody id="table">
+                    <tr>
+                        <th>
+                        <input autocomplete="off" style="width: 250px;" type="text" onfocus="appendrow(this)" onkeyup="get_search_results(this)" placeholder="Enter Ledger Name" name="name" onmouseover="remove_message();" required>
+                        <div></div>
+                        </th>
+                        <th>Rs.&nbsp;<input type="number" style="width: 150px;" name="amount" required> </th>
+                        <th>
+                            <input type="number" autocomplete="off" style="width: 100px;" name="voucher">
+
+                        </th>
+                        <th>
+                             <input autocomplete="off" style="width: 250px;" type="text" placeholder="Description" name="description">
+                        </th>
+                        </tr>
+
+                </tbody>
+
+            </table>
+             </div>
+    </div>
+    <br><h3 align="center">
+    <button type="submit" class="btn btn-success" onclick="copy();">Purchase</button>
+<input type="hidden" name="ledger_main" id="ledger_main_id">
+<input type="hidden" name="type_main" id="type_main_id">
+<input type="hidden" name="description_main" id="description_main_id">
+
+</form>
+</div>
+
+<script>
+var url = "http://127.0.0.1:8000/home/"+{{ id }}+"/ledger_json";
+function copy(){
+    document.getElementById("ledger_main_id").value = document.getElementById("search").value;
+    document.getElementById("type_main_id").value = document.getElementById("type_top").value;
+    document.getElementById("description_main_id").value = document.getElementById("description_top").value;
+
+}
+function getsearch_results(){
+
+    process_search(url);
+    var node = document.getElementById("searched");
+    document.getElementById("type").innerHTML = "";
+    clear(node);
+}
+
+function clear(node){
+    while (node.hasChildNodes()) {
+        node.removeChild(node.lastChild);
+    }
+}
+function process_search(url)
+{
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            show_search_items(xmlhttp);
+        }
+    }
+    xmlhttp.open("GET",url,true);
+    xmlhttp.send();
+}
+function show_search_items(xmlhttp){
+
+    var query = document.getElementById("search").value.toString().toLowerCase().trim();
+    var jsonresponse = JSON.parse(xmlhttp.responseText);
+    if ( query.length > 0 ){
+    for (x in jsonresponse){
+        var name = jsonresponse[x].fields['name'].toString().toLowerCase().trim();
+        if ( name.indexOf(query) !== -1){
+
+            display_results(jsonresponse[x].fields['name'],jsonresponse[x].fields['type']);
+        }
+    }
+    }
+}
+
+
+function  display_results(name,type) {
+    var Type = document.getElementById("type");
+    var input = document.getElementById("search");
+    var parent = document.getElementById("searched");
+    var child = document.createElement("a");
+    child.onclick = function(){
+        input.value=name;
+        clear(parent);
+        Type.innerHTML = type;
+     }
+    child.innerHTML = name + "<br>";
+    parent.appendChild(child);
+}
+
+function appendrow(input){
+    input.onfocus = "";
+    var table = input.parentElement.parentElement.parentElement;
+    var tr = input.parentElement.parentElement;
+    var row = tr.cloneNode(true);
+    row.children[1].firstElementChild.required = false;
+    row.children[0].firstElementChild.required = false;
+    table.appendChild(row);
+}
+function get_search_results(input){
+
+    var th = input.parentElement;
+    var node = th.children[1];
+    clear(node);
+    process_search_ledger(input);
+    node.innerHTML = "";
+}
+function process_search_ledger(input)
+{
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            show_ledger_search_items(xmlhttp,input);
+        }
+    }
+    xmlhttp.open("GET",url,true);
+    xmlhttp.send();
+}
+function show_ledger_search_items(xmlhttp,input)
+{
+    var query = input.value.toString().toLowerCase().trim();
+    var jsonresponse = JSON.parse(xmlhttp.responseText);
+    if (query.length > 0){
+    for (x in jsonresponse){
+        var ledger_name = jsonresponse[x]['fields']['name'].toString().toLowerCase().trim();
+        if ( ledger_name.indexOf(query) !== -1){
+            display_results_ledger(jsonresponse[x]['fields']['name'],input);
+        }
+    }
+    }
+}
+function display_results_ledger(name,input) {
+     var tr = input.parentElement.parentElement;
+     var th = input.parentElement.children;
+     var parent = th[1];
+     var child = document.createElement("a");
+     child.onclick = function(){
+        input.value=name;
+        clear(parent);
+     }
+     child.innerHTML = name + "<br>";
+     parent.appendChild(child);
+}
+function remove_message(){
+    var message = document.getElementById('message');
+    message.innerHTML = "";
+}
+</script>
+{% endblock %}

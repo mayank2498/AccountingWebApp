@@ -1,4 +1,4 @@
-from django.contrib import admin
+"""from django.contrib import admin
 from .models import Expense,Impress,Receive
 
 
@@ -15,4 +15,4 @@ admin.site.register(Impress,ImpressAdmin)
 class ReceiveAdmin(admin.ModelAdmin):
     list_display = ["ledger", "amount", "transaction_type","voucher"]
 
-admin.site.register(Receive,ReceiveAdmin)
+admin.site.register(Receive,ReceiveAdmin)"""

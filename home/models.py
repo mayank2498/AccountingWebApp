@@ -15,16 +15,18 @@ class Ledger(models.Model):
         ('Supplier','Supplier'),
         ('Customer','Customer'),
         ('Employee','Employee'),
+        ('Personal','Personal'),
+        ('Others','Others'),
     )
     firm = models.ForeignKey(Firm,on_delete=models.CASCADE)
     name = models.CharField(max_length=200,null=False)
     address = models.CharField(max_length=500)
     mobile_no = models.CharField(max_length=10)
     pan_no = models.CharField(max_length=100)
-    type =  models.CharField(max_length=50,choices=LEDGER_TYPE,blank=False,null=False,default='Supplier')
-    balance_plus = models.FloatField(default=0.0)
-    balance_minus = models.FloatField(default=0.0)
+    type =  models.CharField(max_length=50,choices=LEDGER_TYPE,blank=False,null=False,default='Others')
     modified = models.DateTimeField(auto_now=True, auto_now_add=False)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
+    balance = models.FloatField(default=0.0)
+    dominant = models.CharField(max_length=7,default='Credit')
     def __str__(self):
         return self.name+"  :   "+self.type

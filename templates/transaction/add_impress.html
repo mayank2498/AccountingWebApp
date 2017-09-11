@@ -17,7 +17,11 @@
                         <div class="col-sm-offset-1 col-sm-10">
                             Ledger Name :
 
-                            <input autocomplete="off" style="width: 250px;" type="text" onkeyup="getsearch_results()" placeholder="Enter Ledger Name" name="ledger" id="search" value="{{ input_impress.ledger.name }}">
+                            <input autocomplete="off" style="width: 250px;" type="text" onkeyup="getsearch_results()" placeholder="Enter Ledger Name" name="ledger" id="search"
+                                   {% if ledger_name %}
+                                   value = "{{ ledger_name }}"
+                                   {% endif %}
+                                   value="{{ input_impress.ledger.name }}">
                         <span class="badge" id="type">{{ input_impress.ledger.type }}</span>
                         <div id="searched">
                         </div>
@@ -35,7 +39,7 @@
                             <br><br><br>
                         <div class="col-sm-offset-0 col-sm-10">
                         Transaction Type :
-                            <select name="transaction_type">
+                            <select name="mode">
                                 <option>Cash</option>
                                 <option>Bank</option>
                             </select>
@@ -63,12 +67,12 @@
             <div class="panel panel-default">
                 <div class="panel-body">
     <h5 align="center"><i><b>This voucher ID already exists</b></i> </h5><br>
-    <h5 align="center"><i>{{ category }} Data</i> </h5>
+    <h5 align="center"><i>{{ obj.voucher_type }} Data</i> </h5>
     --------------------------------------------------------------------------------------------------------------------------
     <br><br><br>
 <div align="center">
 Ledger Name :&nbsp;&nbsp;&nbsp;{{ obj.ledger.name }}
-<span class="badge">{{ type }}</span>
+<span class="badge">{{ obj.ledger.type }}</span>
 <br><br>
     <div align="center">Amount  &nbsp;:&nbsp;&nbsp;&#8377&nbsp; {{ obj.amount }}
 <br><br>
@@ -76,7 +80,7 @@ Voucher number :&nbsp;&nbsp;  {{ v_no }}
 <br><br>
 Date of Transaction :&nbsp;&nbsp;  {{ obj.created }}
 <br><br>
-Transaction Type &nbsp; : &nbsp;&nbsp;  {{ obj.transaction_type }}
+Transaction Type &nbsp; : &nbsp;&nbsp;  {{ obj.mode }}
 <br><br>
 Description :&nbsp;&nbsp;  {{ obj.description }}
 

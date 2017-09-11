@@ -1,0 +1,16 @@
+{% extends 'home/base.html' %}
+{% block title %}Ledger Info{% endblock %}
+{% block ledger %} active {% endblock %}
+
+{% block body %}<div class="jumbotron">
+    <h4 align="center"><b><u>Ledger Name</u></b> : &nbsp;&nbsp;&nbsp;{{ ledger.name }}
+    <br><br>
+        <h4 align="center"><b><u>Phone Number</u></b> : &nbsp;&nbsp;&nbsp;{{ ledger.mobile_no }}
+    <br><br>
+            <h4 align="center"><b><u>Address</u></b> : &nbsp;&nbsp;&nbsp;{{ ledger.address }}
+    <br><br>
+                <h4 align="center"><b><u>Pan no</u></b> : &nbsp;&nbsp;&nbsp;{{ ledger.pan_no }}
+    <br><br>
+                    <h4 align="center"><b><u>Type</u></b> : &nbsp;&nbsp;&nbsp;{{ ledger.type }}
+</div>
+{% endblock %}

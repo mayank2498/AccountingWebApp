@@ -28,7 +28,6 @@
                     <tr>
                         <th>Ledger Name</th>
                         <th>Type</th>
-                        <th>Mobile Number</th>
                         <th>Expense Amount</th>
                         <th>Transaction Type</th>
                         <th>Voucher Number</th>
@@ -42,9 +41,8 @@
                         <td>
                             <span class="badge">{{ expense.ledger.type }}</span></a>
                         </td>
-                        <td>{{ expense.ledger.mobile_no }}</td>
                         <td>{{ expense.amount }}</td>
-                        <td>{{ expense.transaction_type }}</td>
+                        <td>{{ expense.mode }}</td>
                         <td>{{ expense.voucher.voucher_no }}</td>
                         <td>{{ expense.created }}</td>
                     <td>
