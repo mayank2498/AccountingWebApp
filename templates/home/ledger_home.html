@@ -4,6 +4,7 @@
 {% block name %}{{ name }}{% endblock %}
 {% block year %}{{ year }}{% endblock %}
 {% block body %}
+    {{ error }}
     <div class="container">
   <ul class="nav nav-pills">
     <li class="{{ all }}"><a data-toggle="pill" href="{% url 'home:ledger_home' id %}"><h4>ALL</h4></a></li>

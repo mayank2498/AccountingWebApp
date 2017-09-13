@@ -16,6 +16,7 @@ class Ledger(models.Model):
         ('Customer','Customer'),
         ('Employee','Employee'),
         ('Personal','Personal'),
+        ('Company','Company'),
         ('Others','Others'),
     )
     firm = models.ForeignKey(Firm,on_delete=models.CASCADE)

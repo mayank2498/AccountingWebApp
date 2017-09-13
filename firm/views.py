@@ -28,7 +28,7 @@ def add_firm(request):
                 ledger.type = 'Personal'
                 ledger.firm_id = firm.id
                 ledger.save()
-                return render(request, 'firm/firm_login.html',{'message':'Firm has been saved. A Ledger named Cash has been created'})
+                return redirect('/firm/firm_login')
             else:
                 return render(request,'firm/add_firm.html',{'message':'Your passwords do not match !'})
         else:

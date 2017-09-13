@@ -35,11 +35,11 @@ def login_user(request):
         else:
             return render(request,'login/login_admin.html')
     else:
-        return redirect('http://127.0.0.1:8000/firm/firm_login')
+        return redirect('/firm/firm_login')
 
 def logout_user(request):
     logout(request)
-    return redirect('http://127.0.0.1:8000/login/')
+    return redirect('/login/')
 
 
 def verify(request):

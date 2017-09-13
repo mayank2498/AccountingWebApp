@@ -4,6 +4,7 @@ from home.models import Ledger,Voucher
 from transaction.models import Transaction
 
 def impress_home(request,firm_id):
+    print(request.get_host())
     firm = Firm.objects.get(id=int(firm_id))
     impresses = Transaction.objects.filter(ledger__firm_id=int(firm_id),voucher_type='Impress')
     return render(request,'transaction/impress_home.html',{'impresses':impresses,'name':firm.name,'year':firm.year,'id':firm.id,'all':'active'})
@@ -66,7 +67,7 @@ def add_impress(request,firm_id):
         else:
             return render(request,'transaction/add_impress.html',{'name':firm.name,'year':firm.year,'id':firm.id})
     else:
-        return redirect('http://127.0.0.1:8000/login')
+        return redirect('/login')
 
 
 def expense_home(request,firm_id):
@@ -133,7 +134,7 @@ def add_expense(request,firm_id):
         else:
             return render(request,'transaction/add_expense.html',{'name':firm.name,'year':firm.year,'id':firm.id})
     else:
-        return redirect('http://127.0.0.1:8000/login')
+        return redirect('/login')
 
 
 def update_impress(expense,firm_id,expense_amount):
@@ -222,8 +223,7 @@ def add_receive(request,firm_id):
         else:
             return render(request,'transaction/add_receive.html',{'name':firm.name,'year':firm.year,'id':firm.id})
     else:
-        return redirect('http://127.0.0.1:8000/login')
-
+        return redirect('/login')
 
 def check_voucher_no(v_no,firm_id):
     transactions = Transaction.objects.filter(ledger__firm_id=int(firm_id))
@@ -233,24 +233,57 @@ def check_voucher_no(v_no,firm_id):
     return [False,'success']
 
 def ledger_details(request,firm_id,ledger_id):
-    amount = 0.0
-    type = 'Credit'
-    firm = Firm.objects.get(id=int(firm_id))
-    firm_id = int(firm_id)
-    ledger = Ledger.objects.get(id=int(ledger_id))
-    transactions = Transaction.objects.filter(ledger__firm_id=firm_id,ledger__name=ledger.name)
-    for transaction in transactions:
-        if transaction.type == 'Credit':
-            amount += transaction.amount
-        else:
-            amount -= transaction.amount
-    if amount < 0.0 :
-        amount = float(0-amount)
-        type = 'Debit'
+    if request.method == "POST":
+        name = request.POST['name']
+        amount = request.POST['amount']
+        type = request.POST['type']
+        v_no = request.POST['voucher']
+        description = request.POST['description']
+        try :
+            x = Ledger.objects.filter(name=name,firm_id=int(firm_id))[0]
+            y = Transaction.objects.filter(voucher__voucher_no=v_no,ledger__name=name)[0]
+        except Exception as e:
+            amount = 0.0
+            type = 'Credit'
+            firm = Firm.objects.get(id=int(firm_id))
+            firm_id = int(firm_id)
+            ledger = Ledger.objects.get(id=int(ledger_id))
+            transactions = Transaction.objects.filter(ledger__firm_id=firm_id, ledger__name=ledger.name)
+            for transaction in transactions:
+                if transaction.type == 'Credit':
+                    amount += transaction.amount
+                else:
+                    amount -= transaction.amount
+            if amount < 0.0:
+                amount = float(0 - amount)
+                type = 'Debit'
 
-    return render(request,'transaction/ledger_details.html',{'transactions':transactions,
-                                                             'name':firm.name,'year':firm.year,'id':firm.id,'ledger':ledger, 'amount':amount,'type':type
-                                                             })
+            return render(request, 'transaction/ledger_details.html', {'transactions': transactions,
+                                                                       'name': firm.name, 'year': firm.year,
+                                                                       'id': firm.id, 'ledger': ledger,
+                                                                       'amount': amount, 'type': type,
+                                                                       'error':'Invalid Details'
+                                                                       })
+
+    else:
+        amount = 0.0
+        type = 'Credit'
+        firm = Firm.objects.get(id=int(firm_id))
+        firm_id = int(firm_id)
+        ledger = Ledger.objects.get(id=int(ledger_id))
+        transactions = Transaction.objects.filter(ledger__firm_id=firm_id,ledger__name=ledger.name)
+        for transaction in transactions:
+            if transaction.type == 'Credit':
+                amount += transaction.amount
+            else:
+                amount -= transaction.amount
+        if amount < 0.0 :
+            amount = float(0-amount)
+            type = 'Debit'
+
+        return render(request,'transaction/ledger_details.html',{'transactions':transactions,
+                                                                 'name':firm.name,'year':firm.year,'id':firm.id,'ledger':ledger, 'amount':amount,'type':type
+                                                                 })
 
 
 def filter_suppliers(request,firm_id,type_id):
@@ -304,17 +337,17 @@ def add_transaction(request,firm_id,type_id,ledger_id):
     if type_id == '1':
         ledger = Ledger.objects.filter(id=ledger_id)[0]
         request.session['name'] = ledger.name
-        url = 'http://127.0.0.1:8000/transaction/'+str(firm_id)+'/add_impress'
+        url = '/transaction/'+str(firm_id)+'/add_impress'
         return redirect(url)
     if type_id == '2':
         ledger = Ledger.objects.filter(id=ledger_id)[0]
         request.session['name'] = ledger.name
-        url = 'http://127.0.0.1:8000/transaction/' + str(firm_id) + '/add_expense'
+        url = '/transaction/' + str(firm_id) + '/add_expense'
         return redirect(url)
     if type_id == '3':
         ledger = Ledger.objects.filter(id=ledger_id)[0]
         request.session['name'] = ledger.name
-        url = 'http://127.0.0.1:8000/transaction/' + str(firm_id) + '/add_receive'
+        url = '/transaction/' + str(firm_id) + '/add_receive'
         return redirect(url)
 
 def add_journal(request,firm_id):
@@ -381,12 +414,94 @@ def add_journal(request,firm_id):
         if request.user.is_authenticated():
             return render(request,'transaction/add_journal.html',{'id':int(firm_id)})
         else:
-            return redirect('http://127.0.0.1:8000/login')
+            return redirect('/login')
 def delete_all():
-    o = Transaction.objects.all()
-    for x in o:
-        x.delete()
+    Transaction.objects.all().delete()
 
+def transaction_add(request,firm_id,ledger_id):
+    amount = request.POST['amount']
+    v_no = request.POST['voucher']
+    description = request.POST['description']
+    type = request.POST['type']
+    try:
+        voucher = Transaction.objects.filter(ledger__firm__id=int(firm_id),voucher__voucher_no=int(v_no))
+    except Exception as e:
+        amount = 0.0
+        type = 'Credit'
+        firm = Firm.objects.get(id=int(firm_id))
+        firm_id = int(firm_id)
+        ledger = Ledger.objects.get(id=int(ledger_id))
+        transactions = Transaction.objects.filter(ledger__firm_id=firm_id, ledger__name=ledger.name)
+        transactions = sorted(transactions, key=lambda x: x.created,reverse=True)
+        for transaction in transactions:
+            if transaction.type == 'Credit':
+                amount += transaction.amount
+            else:
+                amount -= transaction.amount
+        if amount < 0.0:
+            amount = float(0 - amount)
+            type = 'Debit'
+
+        return render(request, 'transaction/ledger_details.html', {'transactions': transactions,
+                                                                   'name': firm.name, 'year': firm.year,'id':firm.id,
+                                                                   'error':'Voucher number already exists',
+                                                                   'ledger': ledger, 'amount': amount, 'type': type
+                                                                   })
+    ledger = Ledger.objects.get(id=int(ledger_id))
+    transaction = Transaction()
+    transaction.ledger_id = ledger.id
+    voucher = Voucher()
+    voucher.voucher_no = str(v_no)
+    voucher.save()
+    transaction.voucher_id = voucher.id
+    transaction.amount = float(amount)
+    transaction.voucher_type = type
+    transaction.description = description
+    if type=='Impress' or type == 'Expense':
+        transaction.type = 'Credit'
+        cash_ledger = Ledger.objects.filter(name="Cash",firm_id=int(firm_id))[0]
+        cash = Transaction()
+        voucher = Voucher()
+        voucher.voucher_no = -1
+        voucher.save()
+        cash.voucher_id = voucher.id
+        cash.ledger_id = cash_ledger.id
+        cash.amount = float(amount)
+        cash.type = 'Debit'
+        cash.save()
+    elif type == 'Receive':
+        transaction.type = 'Debit'
+        cash_ledger = Ledger.objects.filter(name="Cash", firm_id=int(firm_id))[0]
+        cash = Transaction()
+        voucher = Voucher()
+        voucher.voucher_no = -1
+        voucher.save()
+        cash.voucher_id = voucher.id
+        cash.ledger_id = cash_ledger.id
+        cash.amount = float(amount)
+        cash.type = 'Credit'
+        cash.save()
+    transaction.save()
+    amount = 0.0
+    type = 'Credit'
+    firm = Firm.objects.get(id=int(firm_id))
+    firm_id = int(firm_id)
+    ledger = Ledger.objects.get(id=int(ledger_id))
+    transactions = Transaction.objects.filter(ledger__firm__id=firm_id, ledger__name=ledger.name)
+    transactions = sorted(transactions, key=lambda x: x.created,reverse=True)
+    for transaction in transactions:
+        if transaction.type == 'Credit':
+            amount += transaction.amount
+        else:
+            amount -= transaction.amount
+    if amount < 0.0:
+        amount = float(0 - amount)
+        type = 'Debit'
+
+    return render(request, 'transaction/ledger_details.html', {'transactions': transactions,
+                                                               'name': firm.name, 'year': firm.year, 'id': firm.id,
+                                                               'ledger': ledger, 'amount': amount, 'type': type
+                                                               })
 
 
 
