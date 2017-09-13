@@ -84,7 +84,7 @@ select {
 </div>
 
 <script>
-var url = "http://127.0.0.1:8000/home/"+{{ id }}+"/ledger_json";
+var url = "/home/"+{{ id }}+"/ledger_json";
 function copy(){
     document.getElementById("ledger_main_id").value = document.getElementById("search").value;
     document.getElementById("type_main_id").value = document.getElementById("type_top").value;
