@@ -10,7 +10,7 @@
         var password = prompt('Enter Password ');
         if (password == pass){
             alert('Successful. Firm has been deleted');
-            var url = {{ request.get_host }}+'/firm/'+firm_id.toString()+'/delete_firm';
+            var url = '/firm/'+firm_id.toString()+'/delete_firm';
             window.location = url;
         }
         else {
