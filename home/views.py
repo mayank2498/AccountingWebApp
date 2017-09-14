@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from firm.models import Firm
 from .models import Ledger
 from .forms import LedgerForm
@@ -77,7 +77,8 @@ def add_ledger(request,firm_id):
                 ledger.address = "Not Specified"
             ledger.save()
             ledgers = Ledger.objects.filter(firm_id=int(firm_id))
-            return render(request,'home/ledger_home.html',{'ledgers':ledgers,'id':firm_id})
+            url = "/home/"+str(firm_id)+"/ledger_home"
+            return redirect(url)
         else:
             return render(request,'home/add_ledger.html',{'form':form,'id':firm_id})
     else:
