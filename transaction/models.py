@@ -13,7 +13,8 @@ VOUCHER_TYPES = (
         ('Imprest','Imprest'),
         ('Receive','Receive'),
         ('Expense','Expense'),
-        ('Journal','Expense')
+        ('Journal','Expense'),
+        ('Opening','Opening')
     )
 class Transaction(models.Model):
     ledger = models.ForeignKey(Ledger, null=False, on_delete=models.CASCADE)

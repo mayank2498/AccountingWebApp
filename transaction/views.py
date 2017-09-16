@@ -233,57 +233,24 @@ def check_voucher_no(v_no,firm_id):
     return [False,'success']
 
 def ledger_details(request,firm_id,ledger_id):
-    if request.method == "POST":
-        name = request.POST['name']
-        amount = request.POST['amount']
-        type = request.POST['type']
-        v_no = request.POST['voucher']
-        description = request.POST['description']
-        try :
-            x = Ledger.objects.filter(name=name,firm_id=int(firm_id))[0]
-            y = Transaction.objects.filter(voucher__voucher_no=v_no,ledger__name=name)[0]
-        except Exception as e:
-            amount = 0.0
-            type = 'Credit'
-            firm = Firm.objects.get(id=int(firm_id))
-            firm_id = int(firm_id)
-            ledger = Ledger.objects.get(id=int(ledger_id))
-            transactions = Transaction.objects.filter(ledger__firm_id=firm_id, ledger__name=ledger.name)
-            for transaction in transactions:
-                if transaction.type == 'Credit':
-                    amount += transaction.amount
-                else:
-                    amount -= transaction.amount
-            if amount < 0.0:
-                amount = float(0 - amount)
-                type = 'Debit'
-
-            return render(request, 'transaction/ledger_details.html', {'transactions': transactions,
-                                                                       'name': firm.name, 'year': firm.year,
-                                                                       'id': firm.id, 'ledger': ledger,
-                                                                       'amount': amount, 'type': type,
-                                                                       'error':'Invalid Details'
-                                                                       })
-
-    else:
-        amount = 0.0
-        type = 'Credit'
-        firm = Firm.objects.get(id=int(firm_id))
-        firm_id = int(firm_id)
-        ledger = Ledger.objects.get(id=int(ledger_id))
-        transactions = Transaction.objects.filter(ledger__firm_id=firm_id,ledger__name=ledger.name)
-        for transaction in transactions:
-            if transaction.type == 'Credit':
-                amount += transaction.amount
-            else:
-                amount -= transaction.amount
-        if amount < 0.0 :
-            amount = float(0-amount)
-            type = 'Debit'
-
-        return render(request,'transaction/ledger_details.html',{'transactions':transactions,
-                                                                 'name':firm.name,'year':firm.year,'id':firm.id,'ledger':ledger, 'amount':amount,'type':type
-                                                                 })
+    amount = 0.0
+    type = 'Credit'
+    firm = Firm.objects.get(id=int(firm_id))
+    firm_id = int(firm_id)
+    ledger = Ledger.objects.get(id=int(ledger_id))
+    transactions = Transaction.objects.filter(ledger__firm_id=firm_id,ledger__name=ledger.name)
+    for transaction in transactions:
+        if transaction.type == 'Credit':
+            amount += transaction.amount
+        else:
+            amount -= transaction.amount
+    if amount < 0.0 :
+        amount = float(0-amount)
+        type = 'Debit'
+    transactions = sorted(transactions, key=lambda x: x.created, reverse=True)
+    return render(request,'transaction/ledger_details.html',{'transactions':transactions,
+                                                             'name':firm.name,'year':firm.year,'id':firm.id,'ledger':ledger, 'amount':amount,'type':type
+                                                             })
 
 
 def filter_suppliers(request,firm_id,type_id):
@@ -423,9 +390,8 @@ def transaction_add(request,firm_id,ledger_id):
     v_no = request.POST['voucher']
     description = request.POST['description']
     type = request.POST['type']
-    try:
-        voucher = Transaction.objects.filter(ledger__firm__id=int(firm_id),voucher__voucher_no=int(v_no))
-    except Exception as e:
+    voucher = Transaction.objects.filter(ledger__firm__id=int(firm_id),voucher__voucher_no=int(v_no))
+    if len(voucher) > 0 :
         amount = 0.0
         type = 'Credit'
         firm = Firm.objects.get(id=int(firm_id))
@@ -451,12 +417,13 @@ def transaction_add(request,firm_id,ledger_id):
     transaction = Transaction()
     transaction.ledger_id = ledger.id
     voucher = Voucher()
-    voucher.voucher_no = str(v_no)
+    voucher.voucher_no = v_no
     voucher.save()
     transaction.voucher_id = voucher.id
     transaction.amount = float(amount)
     transaction.voucher_type = type
     transaction.description = description
+    transaction.save()
     if type=='Impress' or type == 'Expense':
         transaction.type = 'Credit'
         cash_ledger = Ledger.objects.filter(name="Cash",firm_id=int(firm_id))[0]
@@ -469,7 +436,7 @@ def transaction_add(request,firm_id,ledger_id):
         cash.amount = float(amount)
         cash.type = 'Debit'
         cash.save()
-    elif type == 'Receive':
+    else:
         transaction.type = 'Debit'
         cash_ledger = Ledger.objects.filter(name="Cash", firm_id=int(firm_id))[0]
         cash = Transaction()

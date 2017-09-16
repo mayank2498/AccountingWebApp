@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from firm.models import Firm
-from .models import Ledger
+from .models import Ledger,Voucher
 from .forms import LedgerForm
 from django.core import serializers
 from django.http import HttpResponse
@@ -77,6 +77,19 @@ def add_ledger(request,firm_id):
                 ledger.address = "Not Specified"
             ledger.save()
             ledgers = Ledger.objects.filter(firm_id=int(firm_id))
+            if request.POST['amount'] != '':
+                amount = request.POST['amount']
+                type = request.POST['mode']
+                open = Transaction()
+                open.ledger_id = ledger.id
+                open.amount = float(amount)
+                open.type = type
+                voucher = Voucher()
+                voucher.voucher_no = -1
+                voucher.save()
+                open.voucher_id = voucher.id
+                open.voucher_type = 'Opening'
+                open.save()
             url = "/home/"+str(firm_id)+"/ledger_home"
             return redirect(url)
         else:
@@ -90,8 +103,8 @@ def delete_ledger(request,firm_id,ledger_id):
         firm = Firm.objects.get(id=int(firm_id))
         ledger = Ledger.objects.filter(pk=int(ledger_id))
         ledger.delete()
-        ledgers = Ledger.objects.filter(firm_id=int(firm_id))
-        return render(request,'home/ledger_home.html',{'ledgers':ledgers,'name':firm.name,'year':firm.year,'id':firm.id})
+        url = "/home/" + str(firm_id) + "/ledger_home"
+        return redirect(url)
     else:
         return render(request,'login/login_admin.html')
 

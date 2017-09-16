@@ -80,8 +80,11 @@
                         <td>{{ transaction.voucher_type }}
                         </td>
                         <td>{{ transaction.created }}</td>
-
-                        {% if ledger.name != 'Cash' %}<td>{{ transaction.voucher.voucher_no }}</td>{% endif %}
+                        {% if ledger.name != 'Cash' %}
+                            <td>{% if transaction.voucher.voucher_no != '-1'  %}
+                                {{ transaction.voucher.voucher_no }}
+                                {% endif %}
+                                </td>{% endif %}
                         {% if transaction.type == 'Credit' %}<td>
                             <h5 style="color:blue">&#8377;&nbsp;&nbsp;&nbsp;{{ transaction.amount }}</h5></td>{% endif %}
                         {% if transaction.type == 'Debit' %}<td> ---</td>{% endif %}
@@ -89,11 +92,8 @@
                             <h5 style="color:red">&#8377;&nbsp;&nbsp;&nbsp;{{ transaction.amount }}</h5></td>{% endif %}
                         {% if transaction.type == 'Credit' %}<td> ---</td>{% endif %}
                         <td>
-
                     <tr>
-
                 {% endfor %}
-
                 </tbody>
             </table>
 
