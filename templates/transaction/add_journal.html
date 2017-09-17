@@ -50,6 +50,7 @@ select {
                         <th><h4 style="font-family: 'Nimbus Mono L'; font-size: 24px;"><b><u>Ledger</u></b></h4></th>
                         <th><h4 style="font-family: 'Nimbus Mono L';font-size: 24px;"><b><u>Amount</u></b></h4></th>
                         <th><h4 style="font-family: 'Nimbus Mono L';font-size: 24px;"><b><u>Voucher Number</u></b></h4></th>
+                        <th><h4 style="font-family: 'Nimbus Mono L';font-size: 24px;"><b><u>Date</u><small>&nbsp;&nbsp;&nbsp;optional</small></b></h4></th>
                         <th><h4 style="font-family: 'Nimbus Mono L';font-size: 24px;"><b><u>Description</u></b></h4></th>
                     </tr>
                 </thead>
@@ -59,10 +60,13 @@ select {
                         <input autocomplete="off" style="width: 250px;" type="text" onfocus="appendrow(this)" onkeyup="get_search_results(this)" placeholder="Enter Ledger Name" name="name" onmouseover="remove_message();" required>
                         <div></div>
                         </th>
-                        <th>Rs.&nbsp;<input type="number" style="width: 150px;" name="amount" required> </th>
+                        <th>Rs.&nbsp;<input type="number" style="width: 90px;" name="amount" required> </th>
                         <th>
-                            <input type="number" autocomplete="off" style="width: 100px;" name="voucher">
+                            <input type="number" autocomplete="off" style="width: 80px;" name="voucher">
 
+                        </th>
+                        <th>
+                            <input type="date" autocomplete="off" style="width: 180px;" name="date">
                         </th>
                         <th>
                              <input autocomplete="off" style="width: 250px;" type="text" placeholder="Description" name="description">

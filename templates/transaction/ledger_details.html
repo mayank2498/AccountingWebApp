@@ -1,7 +1,9 @@
 {% extends 'home/base.html' %}
 {% block title %}Ledger Transactions{% endblock %}
 {% block body %}
+    <div id="error">
     <h2 align="center" style="font-family: 'Nimbus Mono L';color: darkblue">{{ error }}</h2>
+    </div>
     <h3 align="center"><i><b>{{ ledger.name }}</b> - <span class="badge">{{ ledger.type }}</span></i>
         <h3 align="right">
 
@@ -24,12 +26,12 @@
                         <th><h4 style="font-family: 'Nimbus Mono L';font-size: 24px;"><b><u>Type</u></b></h4></th>
                         <th><h4 style="font-family: 'Nimbus Mono L';font-size: 24px;"><b><u>Amount</u></b></h4></th>
                         <th><h4 style="font-family: 'Nimbus Mono L';font-size: 24px;"><b><u>Voucher Number</u></b></h4></th>
+                        <th><h4 style="font-family: 'Nimbus Mono L';font-size: 24px;"><b><u>Date</u><small>&nbsp;&nbsp;&nbsp;optional</small></b></h4></th>
                         <th><h4 style="font-family: 'Nimbus Mono L';font-size: 24px;"><b><u>Description</u></b></h4></th>
                     </tr>
                 </thead>
                 <tbody id="table">
                     <tr>
-
                         <th><select name="type">
                             <option>Impress</option>
                             <option>Expense</option>
@@ -41,6 +43,9 @@
                         <th>
                             <input type="number" autocomplete="off" style="width: 80px;" name="voucher">
 
+                        </th>
+                        <th>
+                            <input type="date" autocomplete="off" style="width: 180px;" name="date">
                         </th>
                         <th>
                              <input autocomplete="off" style="width: 250px;" type="text" placeholder="Description" name="description">
@@ -100,4 +105,10 @@
         </div>
     </div>
 </div>
+                </h4></h3>
+<script>
+function clear(){
+    alert('HI');
+}
+</script>
 {% endblock %}

@@ -332,6 +332,7 @@ def add_journal(request,firm_id):
 
         names = request.POST.getlist('name')
         vouchers = request.POST.getlist('voucher')
+        dates = request.POST.getlist('date')
         del vouchers[len(names)-1]
         amounts = request.POST.getlist('amount')
         descriptions = request.POST.getlist('description')
@@ -365,6 +366,9 @@ def add_journal(request,firm_id):
             transaction.voucher_id = voucher.id
             transaction.amount = amounts[i]
             transaction.save()
+            if dates[i] != '':
+                transaction.created = dates[i]
+            transaction.save()
         ledger = Ledger.objects.filter(firm_id=int(firm_id), name=ledger_main)[0]
         transaction = Transaction()
         transaction.ledger_id = ledger.id
@@ -386,18 +390,79 @@ def delete_all():
     Transaction.objects.all().delete()
 
 def transaction_add(request,firm_id,ledger_id):
-    amount = request.POST['amount']
-    v_no = request.POST['voucher']
-    description = request.POST['description']
-    type = request.POST['type']
-    voucher = Transaction.objects.filter(ledger__firm__id=int(firm_id),voucher__voucher_no=int(v_no))
-    if len(voucher) > 0 :
+    if request.method == 'POST':
+        amount = request.POST['amount']
+        v_no = request.POST['voucher']
+        description = request.POST['description']
+        type = request.POST['type']
+        date = request.POST['date']
+        voucher = Transaction.objects.filter(ledger__firm__id=int(firm_id),voucher__voucher_no=int(v_no))
+        if len(voucher) > 0 :
+            amount = 0.0
+            type = 'Credit'
+            firm = Firm.objects.get(id=int(firm_id))
+            firm_id = int(firm_id)
+            ledger = Ledger.objects.get(id=int(ledger_id))
+            transactions = Transaction.objects.filter(ledger__firm_id=firm_id, ledger__name=ledger.name)
+            transactions = sorted(transactions, key=lambda x: x.created,reverse=True)
+            for transaction in transactions:
+                if transaction.type == 'Credit':
+                    amount += transaction.amount
+                else:
+                    amount -= transaction.amount
+            if amount < 0.0:
+                amount = float(0 - amount)
+                type = 'Debit'
+
+            return render(request, 'transaction/ledger_details.html', {'transactions': transactions,
+                                                                       'name': firm.name, 'year': firm.year,'id':firm.id,
+                                                                       'error':'Voucher number already exists',
+                                                                       'ledger': ledger, 'amount': amount, 'type': type
+                                                                       })
+        ledger = Ledger.objects.get(id=int(ledger_id))
+        transaction = Transaction()
+        transaction.ledger_id = ledger.id
+        voucher = Voucher()
+        voucher.voucher_no = v_no
+        voucher.save()
+        transaction.voucher_id = voucher.id
+        transaction.amount = float(amount)
+        transaction.voucher_type = type
+        transaction.description = description
+        transaction.save()
+        if type=='Impress' or type == 'Expense':
+            transaction.type = 'Credit'
+            cash_ledger = Ledger.objects.filter(name="Cash",firm_id=int(firm_id))[0]
+            cash = Transaction()
+            voucher = Voucher()
+            voucher.voucher_no = -1
+            voucher.save()
+            cash.voucher_id = voucher.id
+            cash.ledger_id = cash_ledger.id
+            cash.amount = float(amount)
+            cash.type = 'Debit'
+            cash.save()
+        else:
+            transaction.type = 'Debit'
+            cash_ledger = Ledger.objects.filter(name="Cash", firm_id=int(firm_id))[0]
+            cash = Transaction()
+            voucher = Voucher()
+            voucher.voucher_no = -1
+            voucher.save()
+            cash.voucher_id = voucher.id
+            cash.ledger_id = cash_ledger.id
+            cash.amount = float(amount)
+            cash.type = 'Credit'
+            cash.save()
+        if date != '':
+            transaction.created = date
+        transaction.save()
         amount = 0.0
         type = 'Credit'
         firm = Firm.objects.get(id=int(firm_id))
         firm_id = int(firm_id)
         ledger = Ledger.objects.get(id=int(ledger_id))
-        transactions = Transaction.objects.filter(ledger__firm_id=firm_id, ledger__name=ledger.name)
+        transactions = Transaction.objects.filter(ledger__firm__id=firm_id, ledger__name=ledger.name)
         transactions = sorted(transactions, key=lambda x: x.created,reverse=True)
         for transaction in transactions:
             if transaction.type == 'Credit':
@@ -409,67 +474,13 @@ def transaction_add(request,firm_id,ledger_id):
             type = 'Debit'
 
         return render(request, 'transaction/ledger_details.html', {'transactions': transactions,
-                                                                   'name': firm.name, 'year': firm.year,'id':firm.id,
-                                                                   'error':'Voucher number already exists',
-                                                                   'ledger': ledger, 'amount': amount, 'type': type
+                                                                   'name': firm.name, 'year': firm.year, 'id': firm.id,
+                                                                   'ledger': ledger, 'amount': amount, 'type': type,
+                                                                   'error':"Success"
                                                                    })
-    ledger = Ledger.objects.get(id=int(ledger_id))
-    transaction = Transaction()
-    transaction.ledger_id = ledger.id
-    voucher = Voucher()
-    voucher.voucher_no = v_no
-    voucher.save()
-    transaction.voucher_id = voucher.id
-    transaction.amount = float(amount)
-    transaction.voucher_type = type
-    transaction.description = description
-    transaction.save()
-    if type=='Impress' or type == 'Expense':
-        transaction.type = 'Credit'
-        cash_ledger = Ledger.objects.filter(name="Cash",firm_id=int(firm_id))[0]
-        cash = Transaction()
-        voucher = Voucher()
-        voucher.voucher_no = -1
-        voucher.save()
-        cash.voucher_id = voucher.id
-        cash.ledger_id = cash_ledger.id
-        cash.amount = float(amount)
-        cash.type = 'Debit'
-        cash.save()
     else:
-        transaction.type = 'Debit'
-        cash_ledger = Ledger.objects.filter(name="Cash", firm_id=int(firm_id))[0]
-        cash = Transaction()
-        voucher = Voucher()
-        voucher.voucher_no = -1
-        voucher.save()
-        cash.voucher_id = voucher.id
-        cash.ledger_id = cash_ledger.id
-        cash.amount = float(amount)
-        cash.type = 'Credit'
-        cash.save()
-    transaction.save()
-    amount = 0.0
-    type = 'Credit'
-    firm = Firm.objects.get(id=int(firm_id))
-    firm_id = int(firm_id)
-    ledger = Ledger.objects.get(id=int(ledger_id))
-    transactions = Transaction.objects.filter(ledger__firm__id=firm_id, ledger__name=ledger.name)
-    transactions = sorted(transactions, key=lambda x: x.created,reverse=True)
-    for transaction in transactions:
-        if transaction.type == 'Credit':
-            amount += transaction.amount
-        else:
-            amount -= transaction.amount
-    if amount < 0.0:
-        amount = float(0 - amount)
-        type = 'Debit'
-
-    return render(request, 'transaction/ledger_details.html', {'transactions': transactions,
-                                                               'name': firm.name, 'year': firm.year, 'id': firm.id,
-                                                               'ledger': ledger, 'amount': amount, 'type': type
-                                                               })
-
+        url = "/home/" + str(firm_id) + "/ledger_home"
+        return redirect(url)
 
 
 
