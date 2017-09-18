@@ -86,7 +86,7 @@ Description :&nbsp;&nbsp;  {{ obj.description }}
 
 {% endif %}
 <script>
-var url = "http://127.0.0.1:8000/home/"+{{ id }}+"/ledger_json";
+var url = "/home/"+{{ id }}+"/ledger_json";
 function getsearch_results(){
 
     process_search(url);

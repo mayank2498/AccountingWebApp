@@ -50,6 +50,7 @@ select {
                         <th><h4 style="font-family: 'Nimbus Mono L'; font-size: 24px;"><b><u>Ledger</u></b></h4></th>
                         <th><h4 style="font-family: 'Nimbus Mono L';font-size: 24px;"><b><u>Amount</u></b></h4></th>
                         <th><h4 style="font-family: 'Nimbus Mono L';font-size: 24px;"><b><u>Voucher Number</u></b></h4></th>
+                        <th><h4 style="font-family: 'Nimbus Mono L';font-size: 24px;"><b><u>Date</u><small>&nbsp;&nbsp;&nbsp;optional</small></b></h4></th>
                         <th><h4 style="font-family: 'Nimbus Mono L';font-size: 24px;"><b><u>Description</u></b></h4></th>
                     </tr>
                 </thead>
@@ -59,10 +60,13 @@ select {
                         <input autocomplete="off" style="width: 250px;" type="text" onfocus="appendrow(this)" onkeyup="get_search_results(this)" placeholder="Enter Ledger Name" name="name" onmouseover="remove_message();" required>
                         <div></div>
                         </th>
-                        <th>Rs.&nbsp;<input type="number" style="width: 150px;" name="amount" required> </th>
+                        <th>Rs.&nbsp;<input type="number" style="width: 90px;" name="amount" required> </th>
                         <th>
-                            <input type="number" autocomplete="off" style="width: 100px;" name="voucher">
+                            <input type="number" autocomplete="off" style="width: 80px;" name="voucher">
 
+                        </th>
+                        <th>
+                            <input type="date" autocomplete="off" style="width: 180px;" name="date">
                         </th>
                         <th>
                              <input autocomplete="off" style="width: 250px;" type="text" placeholder="Description" name="description">
@@ -75,16 +79,15 @@ select {
              </div>
     </div>
     <br><h3 align="center">
-    <button type="submit" class="btn btn-success" onclick="copy();">Purchase</button>
+    <button type="submit" class="btn btn-success" onclick="copy();">MAKE JOURNAL ENTRY</button>
 <input type="hidden" name="ledger_main" id="ledger_main_id">
 <input type="hidden" name="type_main" id="type_main_id">
 <input type="hidden" name="description_main" id="description_main_id">
-
 </form>
 </div>
 
 <script>
-var url = "http://127.0.0.1:8000/home/"+{{ id }}+"/ledger_json";
+var url = "/home/"+{{ id }}+"/ledger_json";
 function copy(){
     document.getElementById("ledger_main_id").value = document.getElementById("search").value;
     document.getElementById("type_main_id").value = document.getElementById("type_top").value;
@@ -106,7 +109,7 @@ function clear(node){
 }
 function process_search(url)
 {
-    xmlhttp = new XMLHttpRequest();
+                                                                                                                                                                                                                                                                               xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             show_search_items(xmlhttp);

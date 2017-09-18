@@ -55,7 +55,7 @@ def verify(request):
                 obj.save()
                 login(request,user)
                 print('User Verified')
-                return redirect('http://127.0.0.1:8000/firm/firm_login')
+                return redirect('/firm/firm_login')
         return render(request, 'login/Otp_verify.html',{'message':'Invalid Otp. Try Again.'})
     else:
         return render(request, 'login/Otp_verify.html')

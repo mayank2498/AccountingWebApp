@@ -1,10 +1,6 @@
 {% extends 'home/base.html' %}
 {% block title %}Add Ledger{% endblock %}
 {% block body %}
-<script>
-    var x = document.getElementById("id_address").tagName;
-    alert(x);
-</script>
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12 col-md-7">
@@ -14,6 +10,23 @@
                     <form class="form-horizontal" role="form" action="" method="post">
                         {% csrf_token %}
                         {% include 'home/form_template.html' %}
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-0 col-sm-10">
+                                <label class="control-label col-sm-2">Opening Balance</label>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="number" name="amount">
+                                <small> * Leave this field for 0 balance</small>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-0 col-sm-10">
+                                <label class="control-label col-sm-2">Opening Type</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                 <select name="mode">
+                                    <option>Credit</option>
+                                    <option>Debit</option>
+                            </select>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
                                 <button type="submit" class="btn btn-success">Submit</button>

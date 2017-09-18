@@ -10,7 +10,7 @@
         var password = prompt('Enter Password ');
         if (password == pass){
             alert('Successful. Firm has been deleted');
-            var url = 'http://127.0.0.1:8000/firm/'+firm_id.toString()+'/delete_firm';
+            var url = '/firm/'+firm_id.toString()+'/delete_firm';
             window.location = url;
         }
         else {
@@ -18,11 +18,11 @@
         }
     }
     function verify_edit(pass,firm_id) {
-        alert(pass);
+        //alert(pass);
         var password = prompt('Enter Password ');
         if (password == pass){
             alert('Successful. You can now update firm details.');
-            var url = 'http://127.0.0.1:8000/firm/'+firm_id.toString()+'/update_firm';
+            var url = '/firm/'+firm_id.toString()+'/update_firm';
             window.location = url;
         }
         else {
@@ -80,7 +80,3 @@
 </div>
 </body>
 </html>
-
-<!--
-
--->
