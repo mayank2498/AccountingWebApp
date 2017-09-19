@@ -5,7 +5,41 @@
     <meta charset="UTF-8">
     <title>Add a firm</title>
 </head>
+<script>
+function get_cash(){
+    var ans = confirm('Enter an opening balance for Cash ?');
+    if (ans == true) {
+        var balance = prompt('Enter Opening Balance for Cash ledger');
+        if (isNaN(balance) || balance.length < 1) {
+            alert('Not a number...');
+            window.history.back();
+            return false;
+        }
+        else {
+            var type = prompt('Enter D for Debit and C for Credit');
+            if ((type != 'C') && (type != 'D')) {
+                alert('Wrong Input !!');
+                window.history.back();
+                return false;
+            }
+            else {
+                alert('Creating a Cash ledger with Rs ' + balance + ' balance( ' + type + ' )......');
+                document.getElementById('balance').value = balance;
+                document.getElementById('type').value = type;
+                var form = document.getElementById('form');
+                form.action = "/firm/manage_firms";
+                return true;
+            }
+        }
+    }
+    else {
+        document.getElementById('cash').value = "True";
+        alert('Cash will be created with 0 balance');
+        return true;
+    }
+}
 
+</script>
 <body>
 <div class="container-fluid">
     <div class="row">
@@ -14,7 +48,7 @@
                 <div class="panel-body">
 
                     <h2 align="center">Add a firm</h2><br><br>
-                    <form class="form-horizontal" role="form" action="" method="post">
+                    <form class="form-horizontal" name="form" role="form" action="" method="post">
                         {% csrf_token %}
                         <div class="form-group">
                             <div class="col-sm-offset-4">
@@ -40,7 +74,7 @@
                         </div><br><br>
                         <div class="form-group">
                             <div class="col-sm-offset-5">
-                                <button type="submit" class="btn btn-success"><h4>Save Firm</h4></button>
+                                <button type="submit" class="btn btn-success" onclick="get_cash();"><h4>Save Firm</h4></button>
                             </div>
                         </div>
                         <br>{{ message }}
@@ -52,6 +86,10 @@
                                 <button type="button" class="btn btn-primary">Manage your firms</button>
                                 </a>
                             </h4>
+                            <input type="hidden" id="balance" name="balance">
+                            <input type="hidden" id="type" name="type">
+                            <input type="hidden" id="cash" name="cash" value="False">
+
                     </form>
                 </div>
             </div>

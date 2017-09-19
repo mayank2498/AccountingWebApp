@@ -5,10 +5,12 @@ from django.views.decorators.csrf import csrf_protect
 from .models import Firm
 from .forms import FirmForm
 from home.models import Ledger
-# Create your views here.
+from transaction.models import Transaction,Voucher
+
 def add_firm(request):
     if request.user.is_authenticated():
         if request.method == 'POST':
+            print('INside POSt')
             name = request.POST['firm_name']
             year = request.POST['firm_year']
             password = request.POST['pass']
@@ -28,6 +30,26 @@ def add_firm(request):
                 ledger.type = 'Personal'
                 ledger.firm_id = firm.id
                 ledger.save()
+                if request.POST['cash'] != "True" :
+                    amount = request.POST['balance']
+                    type = request.POST['type']
+                    entry = Transaction()
+                    entry.ledger_id = ledger.id
+                    entry.description = "opening balance entered"
+                    if type == 'D':
+                        entry.type = 'Debit'
+                    else :
+                        entry.type = 'Credit'
+                    voucher = Voucher()
+                    voucher.voucher_no = -1
+                    voucher.save()
+                    entry.voucher_id = voucher.id
+                    entry.voucher_type = 'Opening'
+                    entry.amount = amount
+                    entry.save()
+                    return redirect('/firm/firm_login')
+                else:
+                    print('no opening balance')
                 return redirect('/firm/firm_login')
             else:
                 return render(request,'firm/add_firm.html',{'message':'Your passwords do not match !'})
